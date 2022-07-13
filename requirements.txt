@@ -4,5 +4,6 @@
 
 azure-functions
 snowflake-connector-python
+datetime
 json
 
