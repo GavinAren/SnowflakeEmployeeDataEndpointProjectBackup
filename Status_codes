@@ -1,0 +1,10 @@
+Status_code and message
+201 - GET Request Sucessfull!
+202 - POST request successful. Insertion of following entry ID: {inpID},Name: {inpName}, DoB: {inpDoB} successful!
+
+Error_code and message
+501 - GET request unsuccessful, no such entry exists in the table!
+502 - No 'ID' provided in the request body, POST request unsuccesfull!
+503 - No 'name' provided in the request body, POST request unsuccesfull!
+504 - No (Date Of Birth) 'DoB' provided in the request body, POST request unsuccesfull!
+505 - (Date Of Birth) DoB is not in DD/MM/YYYY format, POST request unsuccesfull!
