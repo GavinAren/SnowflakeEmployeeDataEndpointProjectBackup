@@ -1,10 +1,18 @@
 Status_code and message
-201 - GET Request Sucessfull!
-202 - POST request successful. Insertion of following entry ID: {inpID},Name: {inpName}, DoB: {inpDoB} successful!
+201 - GET Request Sucessful!
+202 - POST request successful. Insertion of the following entry ID: {inpID},Name: {inpName}, DoB: {inpDoB} successful!
+203 - DELETE request successful. Deletion of the following row ID: {inpID},Name: {inpName}, DoB: {inpDoB} successful!
+204 - PUT REQUEST succesful. Record updated! 
 
 Error_code and message
 501 - GET request unsuccessful, no such entry exists in the table!
 502 - No 'ID' provided in the request body, POST request unsuccesfull!
 503 - No 'name' provided in the request body, POST request unsuccesfull!
 504 - No (Date Of Birth) 'DoB' provided in the request body, POST request unsuccesfull!
-505 - (Date Of Birth) DoB is not in DD/MM/YYYY format, POST request unsuccesfull!
+505 - POST request unsuccessful, (Date Of Birth) DoB is not in DD/MM/YYYY format!
+506 - DELETE request unsuccessful, no such entry exists in the table!
+507 - PUT request unsuccessful, no ID provided in the request body!
+508 - PUT request unsuccessful, no entry with ID: {originalID} exists in the table!
+509 - PUT request unsuccessful, both the new Name and new DoB need to be included in the request body!
+510 - PUT request unsuccessful, (Date Of Birth) DoB is not in DD/MM/YYYY format!
+511 - POST requet unsuccessful, an entry already exists for ID: {inpID}, please choose a new ID! 

@@ -26,30 +26,6 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     inpID = req.params.get('ID')
     inpDoB = req.params.get('DoB')
     finalResponse = {} #global string to hold the final formulated response  
-    
-    if not inpName:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            pass
-        else:
-            inpName = req_body.get('name')
-
-    if not inpID:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            pass
-        else:
-            inpID = req_body.get('ID')
-            
-    if not inpDoB:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            pass
-        else:
-            inpDoB = req_body.get('DoB')
 
     ### PROCESSING THE INPUT PARAMETERS FROM THE GET REQUEST 
     if inpName: # IF INPUT NAME IS PROVIDED :
@@ -58,7 +34,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             mycursor.execute("USE WAREHOUSE project_warehouse")
             mycursor.execute("USE DATABASE project_database")
             mycursor.execute("USE SCHEMA project_schema")
-            mycursor.execute (f"SELECT * FROM EMPLOYEEDATA WHERE Name =  '{inpName}' ")
+            mycursor.execute (f"SELECT * FROM EmployeeData WHERE Name =  '{inpName}' ")
           
             output = {}
             for (ID, Name, DoB) in mycursor:
@@ -87,7 +63,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             mycursor.execute("USE WAREHOUSE project_warehouse")
             mycursor.execute("USE DATABASE project_database")
             mycursor.execute("USE SCHEMA project_schema")
-            mycursor.execute (f"SELECT * FROM EMPLOYEEDATA WHERE ID =  '{inpID}' ORDER BY Name") 
+            mycursor.execute (f"SELECT * FROM EmployeeData WHERE ID =  '{inpID}' ORDER BY Name") 
             
             output = {}
             for (ID, Name, DoB) in mycursor:
@@ -120,7 +96,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             mycursor.execute("USE WAREHOUSE project_warehouse")
             mycursor.execute("USE DATABASE project_database")
             mycursor.execute("USE SCHEMA project_schema")
-            mycursor.execute (f"SELECT * FROM EMPLOYEEDATA WHERE DoB =  '{inpDoB}' ") 
+            mycursor.execute (f"SELECT * FROM EmployeeData WHERE DoB =  '{inpDoB}' ") 
             
             output = {}
             for (ID, Name, DoB) in mycursor:
