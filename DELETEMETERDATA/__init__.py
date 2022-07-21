@@ -1,24 +1,75 @@
 import logging
+from wsgiref import validate
 
 import azure.functions as func
+# import snowflake - in snowflake deatils need to pass in 3 things
+import snowflake.connector
+from datetime import datetime
+import json
 
-
+def validate_dateandtime(date_text):
+        try:
+            datetime.strptime(date_text, '%Y-%m-%dT%H:%M:%S')
+            return True
+        except ValueError:
+            return False
+        
+def validate_date(date_text):
+        try:
+            datetime.strptime(date_text, '%Y-%m-%d')
+            return True
+        except ValueError:
+            return False
+        
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
 
-    name = req.params.get('name')
-    if not name:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            pass
-        else:
-            name = req_body.get('name')
+    ### ESTABLISHING SNOWFLAKE CONNECTION AND USING THE RIGHT TABLE
+        
+    con = snowflake.connector.connect(
+        user='gavinaren',
+        password='BrokenLaptop123',
+        account='mc24391.switzerland-north.azure'
+    )
 
-    if name:
-        return func.HttpResponse(f"Hello, {name}. This HTTP triggered function executed successfully.")
+    mycursor = con.cursor()
+    print("Connection eshtablished with Snwoflake and got the cursor")
+    ###CONNECTION ESTABLISHED
+
+    ###GETTING INPUT PARAMETERS FROM THE DELETE REQUEST
+    inpMeterNumber = req.get_json().get('meterNumber')
+    finalResponse = {} #global string to hold the final formulated response  
+
+    ### PROCESSING THE INPUT PARAMETERS FROM THE DELETE REQUEST 
+    if inpMeterNumber:  # checks if it is provided
+        try:
+            mycursor.execute("USE WAREHOUSE project_warehouse")
+            mycursor.execute("USE DATABASE project_database")
+            mycursor.execute("USE SCHEMA project_schema")
+        
+            mycursor.execute (f"DELETE FROM MeterData WHERE MeterNumber =  '{inpMeterNumber}' ")                           
+            for row in mycursor.fetchall():                
+                #output['Number of Rows Deleted'] = row                                  
+                #finalResponse['output'] = {'Number of Rows Deleted': row[0]}
+                
+                if row[0] <1: #if nothing is deleted then show error
+                    finalResponse['error_code'] = 501
+                    finalResponse['message'] = "DELETE request unsuccessful, no such entry exists in the table!"
+                    return func.HttpResponse(json.dumps(finalResponse))                                 
+                
+                else:
+                    finalResponse['status_code'] = 202
+                    finalResponse['message'] = "DELETE request successful!" 
+                    finalResponse['output']= (f"Number Of Rows Deleted: {row[0]}") 
+                    return func.HttpResponse(json.dumps(finalResponse ))
+            
+        finally: 
+            mycursor.close()
+                
+     
     else:
         return func.HttpResponse(
-             "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
+             "You have reached a custom endpoint executed successfully. Pass in a 'MeterNumber' with this DELETE request to receive the interval register for a personalized response.",
              status_code=200
         )
+        

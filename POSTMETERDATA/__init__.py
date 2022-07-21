@@ -35,12 +35,12 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     ###CONNECTION ESTABLISHED
 
     ###GETTING INPUT PARAMETERS FROM THE GET REQUEST  
-    inpMeterEventDateTime = req.get_json().get('meterEventDateTime')
-    inpMeterNumber = req.get_json().get('meterNumber')
-    inpDeviceType = req.get_json().get('deviceType')
-    inpMeterType = req.get_json().get('meterType')
-    inpIntervalDate = req.get_json().get('intervalDate')
-    inpIntervalRegister = req.get_json().get('intervalRegister')
+    inpMeterEventDateTime = req.get_json().get('MeterEventDateTime')
+    inpMeterNumber = req.get_json().get('MeterNumber')
+    inpDeviceNumber = req.get_json().get('DeviceNumber')
+    inpMeterType = req.get_json().get('MeterType')
+    inpIntervalDate = req.get_json().get('IntervalDate')
+    inpIntervalRegister = req.get_json().get('IntervalRegister')
     finalResponse = {} #global string to hold the final formulated response
         
     if inpMeterNumber: 
@@ -53,35 +53,38 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                     mycursor.execute("USE WAREHOUSE project_warehouse")
                     mycursor.execute("USE DATABASE project_database")
                     mycursor.execute("USE SCHEMA project_schema")
-                    mycursor.execute (f"SELECT * FROM MeterData WHERE MeterNumber =  {inpMeterNumber} AND IntervalDate = '{inpIntervalDate}' ")
-                
+                    mycursor.execute (f"SELECT * FROM MeterData WHERE MeterNumber =  '{inpMeterNumber}' AND IntervalDate = '{inpIntervalDate}' ")
+                    
+                    #finalResponse['message'] = (f"{mycursor.fetchall()}")
+                    #return func.HttpResponse(json.dumps(finalResponse)) 
+                    
                     output = {}
-                    for (INT__00__VAL,INT__01__VAL,INT__02__VAL,INT__03__VAL,INT__04__VAL,INT__05__VAL,INT__06__VAL,INT__07__VAL,INT__08__VAL,INT__09__VAL,INT__10__VAL,INT__11__VAL,INT__12__VAL,INT__13__VAL,INT__14__VAL,INT__15__VAL,INT__16__VAL,INT__17__VAL,INT__18__VAL,INT__19__VAL,INT__20__VAL,INT__21__VAL,INT__22__VAL,INT__23__VAL,INT__24__VAL ) in mycursor:
-                        output['INT__00__VAL'] = INT__00__VAL
-                        output['INT__01__VAL'] = INT__01__VAL
-                        output['INT__02__VAL'] = INT__02__VAL
-                        output['INT__03__VAL'] = INT__03__VAL
-                        output['INT__04__VAL'] = INT__04__VAL
-                        output['INT__05__VAL'] = INT__05__VAL
-                        output['INT__06__VAL'] = INT__06__VAL   
-                        output['INT__07__VAL'] = INT__07__VAL
-                        output['INT__08__VAL'] = INT__08__VAL
-                        output['INT__09__VAL'] = INT__09__VAL
-                        output['INT__10__VAL'] = INT__10__VAL
-                        output['INT__11__VAL'] = INT__11__VAL
-                        output['INT__12__VAL'] = INT__12__VAL
-                        output['INT__13__VAL'] = INT__13__VAL
-                        output['INT__14__VAL'] = INT__14__VAL
-                        output['INT__15__VAL'] = INT__15__VAL
-                        output['INT__16__VAL'] = INT__16__VAL
-                        output['INT__17__VAL'] = INT__17__VAL
-                        output['INT__18__VAL'] = INT__18__VAL
-                        output['INT__19__VAL'] = INT__19__VAL
-                        output['INT__20__VAL'] = INT__20__VAL
-                        output['INT__21__VAL'] = INT__21__VAL
-                        output['INT__22__VAL'] = INT__22__VAL
-                        output['INT__23__VAL'] = INT__23__VAL
-                        output['INT__24__VAL'] = INT__24__VAL    
+                    for (metereventdatetime, meternumber, devicenumber,metertype,intervaldate, INT_00_VAL,INT_01_VAL,INT_02_VAL,INT_03_VAL,INT_04_VAL,INT_05_VAL,INT_06_VAL,INT_07_VAL,INT_08_VAL,INT_09_VAL,INT_10_VAL,INT_11_VAL,INT_12_VAL,INT_13_VAL,INT_14_VAL,INT_15_VAL,INT_16_VAL,INT_17_VAL,INT_18_VAL,INT_19_VAL,INT_20_VAL,INT_21_VAL,INT_22_VAL,INT_23_VAL,INT_24_VAL ) in mycursor:
+                        output['INT_00_VAL'] = INT_00_VAL
+                        output['INT_01_VAL'] = INT_01_VAL
+                        output['INT_02_VAL'] = INT_02_VAL
+                        output['INT_03_VAL'] = INT_03_VAL
+                        output['INT_04_VAL'] = INT_04_VAL
+                        output['INT_05_VAL'] = INT_05_VAL
+                        output['INT_06_VAL'] = INT_06_VAL   
+                        output['INT_07_VAL'] = INT_07_VAL
+                        output['INT_08_VAL'] = INT_08_VAL
+                        output['INT_09_VAL'] = INT_09_VAL
+                        output['INT_10_VAL'] = INT_10_VAL
+                        output['INT_11_VAL'] = INT_11_VAL
+                        output['INT_12_VAL'] = INT_12_VAL
+                        output['INT_13_VAL'] = INT_13_VAL
+                        output['INT_14_VAL'] = INT_14_VAL
+                        output['INT_15_VAL'] = INT_15_VAL
+                        output['INT_16_VAL'] = INT_16_VAL
+                        output['INT_17_VAL'] = INT_17_VAL
+                        output['INT_18_VAL'] = INT_18_VAL
+                        output['INT_19_VAL'] = INT_19_VAL
+                        output['INT_20_VAL'] = INT_20_VAL
+                        output['INT_21_VAL'] = INT_21_VAL
+                        output['INT_22_VAL'] = INT_22_VAL
+                        output['INT_23_VAL'] = INT_23_VAL
+                        output['INT_24_VAL'] = INT_24_VAL    
                     
                     if len(output)>1:
                         finalResponse['error_code'] = 511
@@ -91,22 +94,22 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                     else:
                         if not inpMeterEventDateTime: 
                             finalResponse['error_code'] = 503
-                            finalResponse['message'] = "No 'meterEventDateTime' provided in the request body, POST request unsuccesfull!"
+                            finalResponse['message'] = "No 'meterEventDateTime' provided in the request body, POST request unsuccesful!"
                             return func.HttpResponse(json.dumps(finalResponse))
                     
                         elif not validate_dateandtime(inpMeterEventDateTime): 
                             finalResponse['error_code'] = 504
-                            finalResponse['message'] = " 'meterEventDateTime' is not in DD/MM/YYYY format, POST request unsuccesfull!"
+                            finalResponse['message'] = " 'meterEventDateTime' is not in DD/MM/YYYY format, POST request unsuccesful!"
                             return func.HttpResponse(json.dumps(finalResponse))
                         
                         elif not inpMeterType:
                             finalResponse['error_code'] = 505
-                            finalResponse['message'] = "No 'meterType' provided in the request body, POST request unsuccesfull!"
+                            finalResponse['message'] = "No 'meterType' provided in the request body, POST request unsuccesful!"
                             return func.HttpResponse(json.dumps(finalResponse))  
                         
-                        elif not inpDeviceType:
+                        elif not inpDeviceNumber:
                             finalResponse['error_code'] = 505
-                            finalResponse['message'] = " No 'deviceType' provided in the request body, POST request unsuccesfull!"
+                            finalResponse['message'] = " No 'deviceType' provided in the request body, POST request unsuccesful!"
                             return func.HttpResponse(json.dumps(finalResponse))    
                                  
                         elif not inpIntervalRegister:
@@ -114,12 +117,22 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                             finalResponse['message'] = " No 'intervalRegister' list provided in the request body, POST request unsuccesfull!"
                             return func.HttpResponse(json.dumps(finalResponse))                                         
                         else:
-                            mycursor.execute (f"INSERT INTO project_schema.MeterData( MeterEventDateTime, MeterNumber, DeviceNumber, MeterType, IntervalDate, ) VALUES ('inpMeterEventDateTime', 'inpMeterNumber', 'inpDeviceNumber', 'inpMeterType', 'inpIntervalDate') ")
-                            ##need to enumerate teh 24 values our of the last variable
-                            ##could do IntervalRegister.get[] for each position
-                            finalResponse['status_code'] = 202
-                            finalResponse['message'] = f"POST request successful. Insertion of following entry ID: {inpID},Name: {inpName}, DoB: {inpDoB} successful!"
-                            return func.HttpResponse(json.dumps(finalResponse))
+                            intervalRegisterDict = inpIntervalRegister
+                            print(intervalRegisterDict)
+                            if len(intervalRegisterDict) < 25:
+                                finalResponse['error_code'] = 506
+                                finalResponse['message'] = " 'intervalRegister' list provided in the request body does not hold values for all comlunm INT_00_VAL to INT_24_VAL, POST request unsuccesfull!"
+                                return func.HttpResponse(json.dumps(finalResponse))                                 
+                            
+                            else:
+                                mycursor.execute ("INSERT INTO project_schema.MeterData( MeterEventDateTime, MeterNumber, DeviceNumber, MeterType, IntervalDate, " + 
+                                                "INT_00_VAL,INT_01_VAL,INT_02_VAL,INT_03_VAL,INT_04_VAL,INT_05_VAL,INT_06_VAL,INT_07_VAL,INT_08_VAL,INT_09_VAL,INT_10_VAL,INT_11_VAL,INT_12_VAL,INT_13_VAL,INT_14_VAL,INT_15_VAL,INT_16_VAL,INT_17_VAL,INT_18_VAL,INT_19_VAL,INT_20_VAL,INT_21_VAL,INT_22_VAL,INT_23_VAL,INT_24_VAL) VALUES "+
+                                                f"('{inpMeterEventDateTime}', '{inpMeterNumber}', '{inpDeviceNumber}', '{inpMeterType}', '{inpIntervalDate}', '{intervalRegisterDict['INT_00_VAL']}','{intervalRegisterDict['INT_01_VAL']}','{intervalRegisterDict['INT_02_VAL']}','{intervalRegisterDict['INT_03_VAL']}','{intervalRegisterDict['INT_04_VAL']}','{intervalRegisterDict['INT_05_VAL']}','{intervalRegisterDict['INT_06_VAL']}','{intervalRegisterDict['INT_07_VAL']}','{intervalRegisterDict['INT_08_VAL']}','{intervalRegisterDict['INT_09_VAL']}','{intervalRegisterDict['INT_10_VAL']}','{intervalRegisterDict['INT_11_VAL']}','{intervalRegisterDict['INT_12_VAL']}','{intervalRegisterDict['INT_13_VAL']}','{intervalRegisterDict['INT_14_VAL']}','{intervalRegisterDict['INT_15_VAL']}','{intervalRegisterDict['INT_16_VAL']}','{intervalRegisterDict['INT_17_VAL']}','{intervalRegisterDict['INT_18_VAL']}','{intervalRegisterDict['INT_19_VAL']}','{intervalRegisterDict['INT_20_VAL']}','{intervalRegisterDict['INT_21_VAL']}','{intervalRegisterDict['INT_22_VAL']}','{intervalRegisterDict['INT_23_VAL']}','{intervalRegisterDict['INT_24_VAL']}') ")
+                                ##need to enumerate teh 24 values our of the last variable
+                                ##could do IntervalRegister.get[] for each position
+                                finalResponse['status_code'] = 202
+                                finalResponse['message'] = f"POST request successful."
+                                return func.HttpResponse(json.dumps(finalResponse))
             
                 finally: 
                     mycursor.close()
