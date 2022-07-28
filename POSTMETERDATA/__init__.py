@@ -4,6 +4,8 @@ import azure.functions as func
 import snowflake.connector
 import json
 from datetime import datetime
+from azure.identity import DefaultAzureCredential
+from azure.keyvault.secrets import SecretClient
 
 def validate_dateandtime(date_text):
         try:
@@ -22,12 +24,16 @@ def validate_date(date_text):
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
 
+
 ### ESTABLISHING SNOWFLAKE CONNECTION AND USING THE RIGHT TABLE
-        
+    
+    credential = DefaultAzureCredential(managed_identity_client_id = "47d7abef-645e-4f73-9e31-e9572d4cd420")
+    secret_client = SecretClient(vault_url="https://gavinarenkeyvault.vault.azure.net/", credential=credential)
+
     con = snowflake.connector.connect(
-        user='gavinaren',
-        password='BrokenLaptop123', #need to implement keyvault
-        account='mc24391.switzerland-north.azure'
+        user=(secret_client.get_secret("snowflakeusername")).value,
+        password=(secret_client.get_secret("snowflakepassword")).value, 
+        account=(secret_client.get_secret("accountidentifier")).value
     )
 
     mycursor = con.cursor()
@@ -99,7 +105,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                     
                         elif not validate_dateandtime(inpMeterEventDateTime): 
                             finalResponse['error_code'] = 504
-                            finalResponse['message'] = " 'meterEventDateTime' is not in DD/MM/YYYY format, POST request unsuccesful!"
+                            finalResponse['message'] = " 'meterEventDateTime' is not in DD/MM/YYYYTHH:MM:SS format, POST request unsuccesful!"
                             return func.HttpResponse(json.dumps(finalResponse))
                         
                         elif not inpMeterType:

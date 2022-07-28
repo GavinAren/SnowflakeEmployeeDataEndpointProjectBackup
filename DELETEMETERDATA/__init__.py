@@ -6,6 +6,8 @@ import azure.functions as func
 import snowflake.connector
 from datetime import datetime
 import json
+from azure.identity import DefaultAzureCredential
+from azure.keyvault.secrets import SecretClient
 
 def validate_dateandtime(date_text):
         try:
@@ -26,10 +28,13 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
     ### ESTABLISHING SNOWFLAKE CONNECTION AND USING THE RIGHT TABLE
         
+    credential = DefaultAzureCredential(managed_identity_client_id = "47d7abef-645e-4f73-9e31-e9572d4cd420")
+    secret_client = SecretClient(vault_url="https://gavinarenkeyvault.vault.azure.net/", credential=credential)
+
     con = snowflake.connector.connect(
-        user='gavinaren',
-        password='BrokenLaptop123',
-        account='mc24391.switzerland-north.azure'
+        user=(secret_client.get_secret("snowflakeusername")).value,
+        password=(secret_client.get_secret("snowflakepassword")).value, 
+        account=(secret_client.get_secret("accountidentifier")).value
     )
 
     mycursor = con.cursor()
